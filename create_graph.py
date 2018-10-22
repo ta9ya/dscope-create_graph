@@ -12,13 +12,12 @@ from matplotlib.projections.polar import PolarAxes
 from matplotlib.projections import register_projection
 from matplotlib import rcParams
 
+rcParams['font.family'] = 'IPAexGothic'
+rcParams.update({'figure.autolayout': True})
+
 BAR_IMG = 'bar.png'
 RADAR_IMG = 'radar.png'
 GRAPH_SIZE = (6, 6)
-
-# rcParams['font.family'] = 'ipagp.tttf'
-
-# fp = FontProperties(fname=r'/Users/iwasa/font/IPAfont00303/ipag.ttf')
 
 
 def radar_factory(num_vars, frame='circle'):
@@ -130,8 +129,11 @@ def create_bar(rank_data):
 	plt.yticks(x_tmp, x)
 	# return axes
 
-	# ax = create_bar()
-	# axes = create_bar()
+	# 縦軸ラベルを反転、上位が上になるようにする
+	ax_bar.invert_yaxis()
+
+	# 横軸ラベルを非表示
+	ax_bar.axes.xaxis.set_ticklabels([])
 
 	# plt.show()
 	plt.savefig(BAR_IMG)
@@ -148,7 +150,7 @@ def create_radarchart(dream_data):
 	theta = radar_factory(N, frame='polygon')
 	Title = 'radar chart'
 	#spoke = 'abc'
-	spoke_labels = ['kosei', 'yumei', 'zairyoku']
+	spoke_labels = ['こせい', 'ゆうめい', 'おかね']
 	color = 'b'
 
 	fig, ax = plt.subplots(figsize=GRAPH_SIZE, subplot_kw=dict(projection='radar'))
@@ -157,7 +159,7 @@ def create_radarchart(dream_data):
 	#  chartの範囲
 	ax.set_ylim(0, 1)
 	# Grid線の位置の指定
-	# fig, ax.set_rgrids([0.2, 0.4, 0.6, 0.8])
+	fig, ax.set_rgrids([])
 
 	fig, ax.set_title(Title, weight='bold', size='medium', position=(0.5, 1.1),
 	horizontalalignment='center', verticalalignment='center')
