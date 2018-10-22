@@ -12,8 +12,24 @@ from matplotlib.projections.polar import PolarAxes
 from matplotlib.projections import register_projection
 from matplotlib import rcParams
 
+# setting for matplotlib
 rcParams['font.family'] = 'IPAexGothic'
 rcParams.update({'figure.autolayout': True})
+
+
+# load job_category
+with open('job_category.csv', 'r') as f:
+	job_category_list = f.readlines()
+	# job_category_list = [(j.split('\t')[0], j.split('\t')[2]) for j in job_category_list]
+	job_category_index = {}
+	for job_category in job_category_list:
+		job_category = job_category.split(',')
+		job_name = ''.join([job_category[0], job_category[1]])
+		if job_category[1] in job_category_index.keys():
+			job_category_index[job_category[2]] += [job_name]
+		else:
+			job_category_index[job_category[2]] = [job_name]
+print(job_category_index)
 
 BAR_IMG = 'bar.png'
 RADAR_IMG = 'radar.png'
@@ -179,8 +195,26 @@ def create_radarchart(dream_data):
 		# return ax
 
 
+def reranking(rank_list):
+	rerank_list = []
+	job_category = job_category_index
+	job_category_items = [j for j in job_category.items()]
+	# print(type(job_category_items))
+
+	for r in rank_list:
+		for j in job_category_items:
+			if r['no'] in j[1]:
+				rerank_list.append(r)
+				job_category_items.remove(j)
+				break
+
+	return rerank_list
+
+
 def create_graph(result):
-	create_bar(result['rank'])
+	rerank_list = reranking(result['rank'])
+
+	create_bar(rerank_list)
 	create_radarchart(result['dream'])
 	bar_img = cv2.imread(BAR_IMG)
 	radar_img = cv2.imread(RADAR_IMG)
